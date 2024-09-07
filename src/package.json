@@ -1,0 +1,22 @@
+{
+  "name": "username_checker",
+  "version": "1.0.0",
+  "main": "username_checker_lambda.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.623.0",
+    "@aws-sdk/client-ssm": "^3.622.0",
+    "@aws-sdk/util-dynamodb": "^3.623.0",
+    "telegram": "^2.23.2",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.142"
+  }
+}
