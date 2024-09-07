@@ -1,9 +1,8 @@
 import {ScheduledHandler} from "aws-lambda";
 import {UsernameCheckLog} from "../types";
-import {loadTelegramVariables} from "../config";
-import {UsernameService} from "../services/username_service";
+import {loadTelegramVariables, typedConfig} from "../config";
 import {TelegramService} from "../services/telegram_service";
-import {UsernameCheckLogService} from "../services/uesrname_check_log_service";
+import {UsernameMonitorLogService} from "../services/username_monitor_log_service";
 
 async function notifyWatcherAboutUsername(
     username: string,
@@ -55,22 +54,19 @@ async function checkUsername(
 }
 
 export const handler: ScheduledHandler = async (_event) => {
-    const usernameCheckLogTableName = process.env.USERNAME_CHECK_LOG_TABLE_NAME;
-    const usernameTable = process.env.USERNAME_TABLE_NAME;
-    if (!usernameCheckLogTableName || !usernameTable) {
-        throw new Error('USERNAME_CHECK_LOG_TABLE_NAME or USERNAME_TABLE_NAME is not set');
+    const usernameMonitorLogTableName = process.env.USERNAME_MONITOR_LOG_TABLE_NAME;
+    if (!usernameMonitorLogTableName) {
+        throw new Error('USERNAME_CHECK_LOG_TABLE_NAME is not set');
     }
 
-    const usernameService = new UsernameService(usernameTable);
-    const usernameCheckLogService = new UsernameCheckLogService(usernameCheckLogTableName);
+    const usernameCheckLogService = new UsernameMonitorLogService(usernameMonitorLogTableName);
     const telegramVariables = await loadTelegramVariables();
     const telegramService = new TelegramService(telegramVariables);
 
     await telegramService.start();
 
     try {
-        const trackedUsernames = await usernameService.getUsernames();
-        const uniqueUsernames = [...new Set(trackedUsernames.map(({username}) => username))];
+        const uniqueUsernames = [...new Set(typedConfig.usernames)];
 
         const usernameCheckLogs = await Promise.all(
             uniqueUsernames.map(username => checkUsername(username, telegramService))

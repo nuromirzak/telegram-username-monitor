@@ -2,15 +2,13 @@ import {Api, TelegramClient} from "telegram";
 import {TelethonVariables} from "../types";
 import {StringSession} from "telegram/sessions";
 import {LogLevel} from "telegram/extensions/Logger";
-import {TelegramClientParams} from "telegram/client/telegramBaseClient";
 
 export class TelegramService {
     client: TelegramClient;
 
-    constructor(telethonVariables: TelethonVariables, clientParams?: TelegramClientParams) {
-        const session = new StringSession(telethonVariables.TELETHON_SESSION_STRING);
-        this.client = new TelegramClient(session, telethonVariables.TELETHON_API_ID, telethonVariables.TELETHON_API_HASH, {
-            ...clientParams,
+    constructor(telethonVariables: TelethonVariables) {
+        const session = new StringSession(telethonVariables.SESSION_STRING);
+        this.client = new TelegramClient(session, telethonVariables.API_ID, telethonVariables.API_HASH, {
             connectionRetries: 1,
             requestRetries: 1,
             floodSleepThreshold: 0,

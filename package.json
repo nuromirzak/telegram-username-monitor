@@ -8,7 +8,8 @@
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
-    "cdk": "cdk"
+    "cdk": "cdk",
+    "generate": "node src/string_session_generator.js"
   },
   "devDependencies": {
     "@types/jest": "^29.5.12",
@@ -23,6 +24,7 @@
   "dependencies": {
     "aws-cdk-lib": "2.150.0",
     "constructs": "^10.0.0",
+    "dotenv": "^16.4.5",
     "source-map-support": "^0.5.21"
   }
 }

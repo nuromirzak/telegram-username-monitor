@@ -1,14 +1,14 @@
-import {TelethonVariables} from "./types";
+import {configSchema, TelethonVariables} from "./types";
 import {GetParameterCommand, SSMClient} from "@aws-sdk/client-ssm";
+import configJson from "./config.json";
 
 export const loadTelegramVariables = async (): Promise<TelethonVariables> => {
     const ssmClient = new SSMClient();
 
-    const apiIdResponse = await ssmClient.send(new GetParameterCommand({Name: 'API_ID', WithDecryption: true}));
-    const apiHashResponse = await ssmClient.send(new GetParameterCommand({Name: 'API_HASH', WithDecryption: true}));
+    const apiIdResponse = await ssmClient.send(new GetParameterCommand({Name: 'API_ID'}));
+    const apiHashResponse = await ssmClient.send(new GetParameterCommand({Name: 'API_HASH'}));
     const stringSessionResponse = await ssmClient.send(new GetParameterCommand({
         Name: 'STRING_SESSION',
-        WithDecryption: true
     }));
 
     const apiId = parseInt(apiIdResponse.Parameter?.Value || '');
@@ -16,12 +16,15 @@ export const loadTelegramVariables = async (): Promise<TelethonVariables> => {
     const stringSession = stringSessionResponse.Parameter?.Value;
 
     if (!apiId || !apiHash || !stringSession) {
-        throw new Error('Missing required environment variables');
+        throw new Error('Missing one of the required parameters: API_ID, API_HASH, STRING_SESSION');
     }
 
     return {
-        TELETHON_API_ID: apiId,
-        TELETHON_API_HASH: apiHash,
-        TELETHON_SESSION_STRING: stringSession,
+        API_ID: apiId,
+        API_HASH: apiHash,
+        SESSION_STRING: stringSession,
     };
 }
+
+export const typedConfig = configSchema.parse(configJson);
+console.log('Loaded config:', typedConfig);

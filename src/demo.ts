@@ -65,7 +65,7 @@ async function occupyUsername() {
     const telegramService = new TelegramService(telegramVariables);
     await telegramService.start();
     const client = telegramService.client;
-    const result = await client.invoke(
+    await client.invoke(
         new Api.account.UpdateUsername({
             username: username,
         })

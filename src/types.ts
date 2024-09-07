@@ -1,28 +1,22 @@
 import {z} from "zod";
 
 export type TelethonVariables = {
-    TELETHON_API_ID: number;
-    TELETHON_API_HASH: string;
-    TELETHON_SESSION_STRING: string;
+	API_ID: number;
+	API_HASH: string;
+	SESSION_STRING: string;
 };
 
-export const addUsernameRequestSchema = z.object({
-    username: z.string(),
-    watcher: z.string(),
+export const usernameMonitorLogSchema = z.object({
+	username: z.string(),
+	date: z.number(),
+	result: z.boolean(),
+	error: z.string().nullable(),
 }).strict();
-export type AddUsernameRequest = z.infer<typeof addUsernameRequestSchema>;
+export type UsernameCheckLog = z.infer<typeof usernameMonitorLogSchema>;
 
-export const usernameCheckLogSchema = z.object({
-    username: z.string(),
-    date: z.number(),
-    result: z.boolean(),
-    error: z.string().nullable(),
+export const configSchema = z.object({
+	usernames: z.array(z.string()),
+	checkIntervalMinutes: z.number(),
 }).strict();
-export type UsernameCheckLog = z.infer<typeof usernameCheckLogSchema>;
-
-export const usernameSchema = z.object({
-    username: z.string(),
-    watcher: z.string(),
-}).strict();
-export type Username = z.infer<typeof usernameSchema>;
+export type Config = z.infer<typeof configSchema>;
 
